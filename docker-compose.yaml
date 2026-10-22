@@ -1,0 +1,36 @@
+services:
+  redis:
+    image: redis:alpine
+    container_name: nextcloud-redis
+    restart: unless-stopped
+
+  app:
+    image: nextcloud:apache
+    container_name: nextcloud
+    restart: unless-stopped
+    ports:
+      - "192.168.1.250:80:80"
+    depends_on:
+      - redis
+    environment:
+      MYSQL_HOST: 192.168.1.200:3306
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+    volumes:
+      - /mnt/Docker/nextcloud/html:/var/www/html
+
+  cloudflared:
+    build:
+      context: ./cloudflared
+    container_name: cloudflared
+    restart: unless-stopped
+    depends_on:
+      - app
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./cloudflared/state:/state
+    environment:
+      DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL}
+      DELETE_PREVIOUS_MESSAGE: "true"
