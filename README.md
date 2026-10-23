@@ -1,4 +1,4 @@
-# Nextcloudflared-dyntunnel
+# NextCloudflared-DynTunnel
 
 A **Nextcloud deployment with Docker Compose** and a **Cloudflare Quick Tunnel**. When the tunnel starts or reconnects, it gets a temporary public URL, adds it to Nextcloud's `trusted_domains`, and sends it to Discord. If enabled, the previous Discord message is deleted so only the latest one remains.
 
